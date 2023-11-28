@@ -113,6 +113,9 @@ class LoginPage extends ConsumerWidget {
                     } else {
                       try {
                         await AuthServices.userLogin(email.text, password.text);
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                        }
                       } on FirebaseException catch (e) {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -128,7 +131,6 @@ class LoginPage extends ConsumerWidget {
                                     ),
                             ),
                           );
-                          print(e.message);
                         }
                       }
                     }

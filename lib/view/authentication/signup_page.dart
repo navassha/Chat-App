@@ -1,10 +1,12 @@
 import 'package:chat_app/extensions/responsive.dart';
+import 'package:chat_app/model/authentication.dart';
 import 'package:chat_app/providers/password_provider.dart';
 import 'package:chat_app/widgets/click_container.dart';
 import 'package:chat_app/widgets/google_container.dart';
 import 'package:chat_app/widgets/loginpage_local.dart';
 import 'package:chat_app/widgets/modified_text.dart';
 import 'package:chat_app/widgets/mytextfiled.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -87,6 +89,30 @@ class SignupPage extends ConsumerWidget {
                           ),
                         ),
                       );
+                    } else {
+                      try {
+                        await AuthServices.createUser(
+                            email.text, password.text);
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                        }
+                      } on FirebaseException catch (e) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: e.code == "INVALID_LOGIN_CREDENTIALS"
+                                  ? const StyledText(
+                                      text: "Check The Deatils!🍀",
+                                      size: 16,
+                                    )
+                                  : StyledText(
+                                      text: e.message.toString(),
+                                      size: 16,
+                                    ),
+                            ),
+                          );
+                        }
+                      }
                     }
                   },
                   child: const ClickContainer(

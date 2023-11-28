@@ -1,4 +1,5 @@
-import 'package:chat_app/view/getstarted/getstarted_page.dart';
+import 'package:chat_app/view/authentication/auth_swicher.dart';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'Chat App',
-      home: GetStarted(),
+      home: Authswither(),
       debugShowCheckedModeBanner: false,
     );
   }
