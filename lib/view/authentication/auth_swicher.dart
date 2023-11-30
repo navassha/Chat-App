@@ -1,4 +1,3 @@
-import 'package:chat_app/model/authentication.dart';
 import 'package:chat_app/providers/authentication.dart';
 
 import 'package:chat_app/view/getstarted/getstarted_page.dart';
