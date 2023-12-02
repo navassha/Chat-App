@@ -16,6 +16,7 @@ class StyledText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
+      overflow: TextOverflow.ellipsis,
       text,
       style: TextStyle(
         fontSize: context.width(size),

@@ -1,17 +1,26 @@
 import 'package:chat_app/extensions/responsive.dart';
+import 'package:chat_app/providers/bottom_navigation.dart';
 import 'package:chat_app/providers/settings_show.dart';
+import 'package:chat_app/view/pages/calls_list.dart';
+import 'package:chat_app/view/pages/chats_page.dart';
+import 'package:chat_app/view/pages/settings_page.dart';
+import 'package:chat_app/widgets/bottom_nav_items.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
 class HomePage extends ConsumerWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
+  final PageController pageController = PageController(
+    initialPage: 1,
+    keepPage: false,
+  );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -26,7 +35,11 @@ class HomePage extends ConsumerWidget {
           title: Row(
             children: [
               Text(
-                "Chats",
+                ref.watch(bottomNavigationProvider) == 0
+                    ? "Calls"
+                    : ref.watch(bottomNavigationProvider) == 1
+                        ? "Chats"
+                        : "Settings",
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: context.width(28),
@@ -50,7 +63,7 @@ class HomePage extends ConsumerWidget {
         body: Stack(
           children: [
             //this container is used to do a bottom navigation bar
-            _bottomNavigationContainer(context),
+            _bottomNavigationContainer(context, ref),
 
             Positioned(
               top: context.width(10),
@@ -68,14 +81,15 @@ class HomePage extends ConsumerWidget {
                     ),
                   ),
                 ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: context.width(10)),
-                  child: Column(
-                    children: [
-                      // this is container is used to search users
-                      _searchBar(context),
-                    ],
-                  ),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(50),
+                      bottomRight: Radius.circular(50)),
+                  child: ref.watch(bottomNavigationProvider) == 0
+                      ? const CallsListpage()
+                      : ref.watch(bottomNavigationProvider) == 1
+                          ? const ChatsPage()
+                          : const SettingsPage(),
                 ),
               ),
             ),
@@ -110,93 +124,62 @@ class HomePage extends ConsumerWidget {
     );
   }
 
-  Positioned _bottomNavigationContainer(BuildContext context) {
+// bottom navigation for the home screen
+
+  Positioned _bottomNavigationContainer(BuildContext context, WidgetRef ref) {
     return Positioned(
-      top: context.width(660),
+      top: context.width(650),
       child: Container(
         width: MediaQuery.of(context).size.width,
-        height: context.width(160),
+        height: context.width(170),
         color: const Color.fromARGB(255, 23, 57, 84),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: context.width(10)),
           child: Column(
             children: [
-              Gap(context.width(55)),
+              Gap(context.width(65)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  CircleAvatar(
-                    radius: context.width(35),
-                    backgroundColor: Colors.white,
-                    child: Icon(
+                  BottomNavigationForHome(
+                    function: () =>
+                        ref.read(bottomNavigationProvider.notifier).state = 0,
+                    number: 0,
+                    icon: Icon(
                       CupertinoIcons.phone,
                       size: context.width(30),
-                      color: Colors.black,
+                      color: ref.watch(bottomNavigationProvider) != 0
+                          ? Colors.black
+                          : Colors.white,
                     ),
                   ),
-                  CircleAvatar(
-                    radius: context.width(35),
-                    backgroundColor: Colors.white,
-                    child: Icon(
+                  BottomNavigationForHome(
+                    function: () =>
+                        ref.read(bottomNavigationProvider.notifier).state = 1,
+                    icon: Icon(
                       CupertinoIcons.ellipses_bubble,
                       size: context.width(30),
-                      color: Colors.black,
+                      color: ref.watch(bottomNavigationProvider) != 1
+                          ? Colors.black
+                          : Colors.white,
                     ),
+                    number: 1,
                   ),
-                  CircleAvatar(
-                    radius: context.width(35),
-                    backgroundColor: Colors.white,
-                    child: Icon(
+                  BottomNavigationForHome(
+                    function: () =>
+                        ref.read(bottomNavigationProvider.notifier).state = 2,
+                    number: 2,
+                    icon: Icon(
                       CupertinoIcons.settings_solid,
                       size: context.width(30),
-                      color: Colors.black,
+                      color: ref.watch(bottomNavigationProvider) != 2
+                          ? Colors.black
+                          : Colors.white,
                     ),
-                  ),
+                  )
                 ],
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Container _searchBar(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: context.width(60),
-      decoration: BoxDecoration(
-        color: const Color(0x5FC7C7C7),
-        borderRadius: BorderRadius.circular(
-          context.width(15),
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: context.width(5),
-        ),
-        child: Center(
-          child: TextField(
-            style: TextStyle(
-              fontSize: context.width(19),
-              color: Colors.black,
-            ),
-            decoration: InputDecoration(
-              hintText: "Search or Start New Chat",
-              hintStyle: TextStyle(
-                fontSize: context.width(18),
-              ),
-              contentPadding: EdgeInsets.all(context.width(20)),
-              focusedBorder:
-                  const UnderlineInputBorder(borderSide: BorderSide.none),
-              enabledBorder:
-                  const UnderlineInputBorder(borderSide: BorderSide.none),
-              prefixIcon: Icon(
-                CupertinoIcons.search,
-                color: Colors.black,
-                size: context.width(26),
-              ),
-            ),
           ),
         ),
       ),
