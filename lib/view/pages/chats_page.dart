@@ -1,22 +1,25 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/extensions/responsive.dart';
+import 'package:chat_app/providers/dark_mode.dart';
 import 'package:chat_app/widgets/modified_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
-class ChatsPage extends StatelessWidget {
+class ChatsPage extends ConsumerWidget {
   const ChatsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final darkmode = ref.watch(darkmodeProvider);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: darkmode == true ? Colors.black : Colors.white,
       body: Padding(
         padding: EdgeInsets.all(context.width(10)),
         child: Column(
           children: [
-            _searchBar(context),
+            _searchBar(context, darkmode),
             Gap(
               context.width(20),
             ),
@@ -29,7 +32,7 @@ class ChatsPage extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: context.width(35),
-                      backgroundColor: Colors.teal,
+                      backgroundColor: Colors.transparent,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(
                           context.width(50),
@@ -75,7 +78,10 @@ class ChatsPage extends StatelessWidget {
                     Column(
                       children: [
                         const Spacer(),
-                        const StyledText(text: "7:08 PM", size: 13),
+                        const StyledText(
+                          text: "7:08 PM",
+                          size: 13,
+                        ),
                         Gap(context.width(5)),
                         CircleAvatar(
                           radius: context.width(10),
@@ -105,7 +111,7 @@ class ChatsPage extends StatelessWidget {
   }
 }
 
-Container _searchBar(BuildContext context) {
+Container _searchBar(BuildContext context, bool darkmode) {
   return Container(
     width: MediaQuery.of(context).size.width,
     height: context.width(60),
@@ -126,22 +132,23 @@ Container _searchBar(BuildContext context) {
           cursorHeight: context.width(16),
           cursorRadius: const Radius.elliptical(10, 10),
           style: TextStyle(
-            fontSize: context.width(19),
-            color: Colors.black,
-          ),
+              fontSize: context.width(19),
+              color: darkmode == true ? Colors.white : Colors.black,
+              fontFamily: "Poppins"),
           decoration: InputDecoration(
             hintText: "Search or Start New Chat",
             hintStyle: TextStyle(
-              fontSize: context.width(18),
-            ),
-            contentPadding: EdgeInsets.all(context.width(20)),
+                color: darkmode == true ? Colors.white : Colors.black,
+                fontSize: context.width(18),
+                fontFamily: "Poppins"),
+            contentPadding: EdgeInsets.all(context.width(17)),
             focusedBorder:
                 const UnderlineInputBorder(borderSide: BorderSide.none),
             enabledBorder:
                 const UnderlineInputBorder(borderSide: BorderSide.none),
             prefixIcon: Icon(
               CupertinoIcons.search,
-              color: Colors.black,
+              color: darkmode == true ? Colors.white : Colors.black,
               size: context.width(26),
             ),
           ),

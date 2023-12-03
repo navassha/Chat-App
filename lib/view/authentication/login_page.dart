@@ -104,6 +104,7 @@ class LoginPage extends ConsumerWidget {
                     if (email.text.isEmpty && password.text.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
+                          backgroundColor: Colors.white,
                           content: StyledText(
                             text: 'Fill The Madotory Fields',
                             size: 16,

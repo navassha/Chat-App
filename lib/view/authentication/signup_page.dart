@@ -84,6 +84,7 @@ class SignupPage extends ConsumerWidget {
                     if (email.text.isEmpty && password.text.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
+                          backgroundColor: Colors.black,
                           content: Text(
                             "Fill The Main Columns",
                           ),

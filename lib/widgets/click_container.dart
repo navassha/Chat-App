@@ -11,7 +11,7 @@ class ClickContainer extends StatelessWidget {
       width: context.width(198),
       height: context.width(49),
       decoration: BoxDecoration(
-        color: const Color(0xff5A25FA),
+        color: const Color.fromARGB(255, 203, 186, 255),
         borderRadius: BorderRadius.circular(
           context.width(22),
         ),

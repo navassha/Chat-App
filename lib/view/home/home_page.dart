@@ -1,10 +1,12 @@
 import 'package:chat_app/extensions/responsive.dart';
 import 'package:chat_app/providers/bottom_navigation.dart';
+import 'package:chat_app/providers/dark_mode.dart';
 import 'package:chat_app/providers/settings_show.dart';
 import 'package:chat_app/view/pages/calls_list.dart';
 import 'package:chat_app/view/pages/chats_page.dart';
 import 'package:chat_app/view/pages/settings_page.dart';
 import 'package:chat_app/widgets/bottom_nav_items.dart';
+import 'package:chat_app/widgets/modified_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,6 +22,7 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
+    final darkmode = ref.watch(darkmodeProvider);
 
     return GestureDetector(
       onTap: () {
@@ -27,9 +30,9 @@ class HomePage extends ConsumerWidget {
         ref.read(settingsProvider.notifier).state = false;
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: darkmode == true ? Colors.black : Colors.white,
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: darkmode == true ? Colors.black : Colors.white,
           elevation: 0,
           centerTitle: false,
           title: Row(
@@ -41,22 +44,22 @@ class HomePage extends ConsumerWidget {
                         ? "Chats"
                         : "Settings",
                 style: TextStyle(
-                  color: Colors.black,
+                  color: darkmode == true ? Colors.white : Colors.black,
                   fontSize: context.width(28),
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w800,
+                  fontFamily: "Poppins",
                 ),
               ),
               const Spacer(),
               IconButton(
-                highlightColor: Colors.transparent,
-                focusColor: Colors.transparent,
-                splashColor: Colors.transparent,
-                onPressed: () {
-                  ref.read(settingsProvider.notifier).state = !settings;
-                },
-                icon: const Icon(Icons.more_horiz),
-                color: Colors.black,
-              ),
+                  highlightColor: Colors.transparent,
+                  focusColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  onPressed: () {
+                    ref.read(settingsProvider.notifier).state = !settings;
+                  },
+                  icon: const Icon(Icons.more_horiz),
+                  color: darkmode == true ? Colors.white : Colors.black),
             ],
           ),
         ),
@@ -71,7 +74,7 @@ class HomePage extends ConsumerWidget {
                 width: MediaQuery.sizeOf(context).width,
                 height: context.width(690),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: darkmode == true ? Colors.black : Colors.white,
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(
                       context.width(50),
@@ -98,27 +101,69 @@ class HomePage extends ConsumerWidget {
                     left: context.width(10),
                     child: const SizedBox(),
                   )
-                : Positioned(
-                    left: context.width(160),
-                    top: context.width(10),
-                    child: Container(
-                      height: context.width(300),
-                      width: context.width(250),
-                      decoration: BoxDecoration(
-                        boxShadow: const [
-                          BoxShadow(
-                            blurRadius: 5,
-                            blurStyle: BlurStyle.normal,
-                          ),
-                        ],
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(
-                          context.width(20),
-                        ),
-                      ),
-                    ),
-                  ),
+                : _homePageSideSettings(context, darkmode, ref),
           ],
+        ),
+      ),
+    );
+  }
+
+  // this is the container for home page side settings
+  // its used to controll mini settings and info
+
+  Positioned _homePageSideSettings(
+      BuildContext context, bool darkmode, WidgetRef ref) {
+    return Positioned(
+      left: context.width(160),
+      top: context.width(10),
+      child: Container(
+        height: context.width(300),
+        width: context.width(250),
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 5,
+              blurStyle: BlurStyle.normal,
+              color: darkmode == true ? Colors.white : Colors.black,
+            ),
+          ],
+          color: darkmode == true ? Colors.black : Colors.white,
+          borderRadius: BorderRadius.circular(
+            context.width(20),
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: context.width(16),
+            vertical: context.width(20),
+          ),
+          child: Column(
+            children: [
+              GestureDetector(
+                onTap: () =>
+                    ref.read(darkmodeProvider.notifier).state = !darkmode,
+                child: SideClicksettings(
+                  text: "Dark Mode",
+                  sideicon: darkmode == false
+                      ? Icon(
+                          CupertinoIcons.light_min,
+                          size: context.width(26),
+                          color: darkmode == true ? Colors.white : Colors.black,
+                        )
+                      : Icon(
+                          CupertinoIcons.light_max,
+                          size: context.width(26),
+                          color: darkmode == true ? Colors.white : Colors.black,
+                        ),
+                ),
+              ),
+              Divider(
+                height: context.width(20),
+                thickness: context.width(1),
+                color: darkmode == true ? Colors.white : Colors.grey,
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -182,6 +227,32 @@ class HomePage extends ConsumerWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class SideClicksettings extends ConsumerWidget {
+  const SideClicksettings({super.key, this.sideicon, required this.text});
+  final Widget? sideicon;
+  final String text;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final darkmode = ref.watch(darkmodeProvider);
+    return Container(
+      height: context.width(40),
+      color: Colors.transparent,
+      child: Row(
+        children: [
+          StyledText(
+            text: text,
+            size: 18,
+            fontWeight: FontWeight.w600,
+            color: darkmode == true ? Colors.white : Colors.black,
+          ),
+          const Spacer(),
+          sideicon!
+        ],
       ),
     );
   }
