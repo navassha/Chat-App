@@ -9,3 +9,15 @@ final authProvider = FutureProvider<AuthServices>((ref) {
 final authstatechangeProvider = StreamProvider<User?>((ref) {
   return AuthServices().authstateChange();
 });
+
+final userNameProvider = StateProvider<String>((ref) {
+  return "";
+});
+
+final userAdressProvider = StateProvider<String>((ref) {
+  return "";
+});
+
+final userEmailAdress = StateProvider<String>((ref) {
+  return "";
+});

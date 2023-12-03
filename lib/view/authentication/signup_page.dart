@@ -1,5 +1,6 @@
 import 'package:chat_app/extensions/responsive.dart';
 import 'package:chat_app/model/authentication.dart';
+import 'package:chat_app/providers/authentication.dart';
 import 'package:chat_app/providers/password_provider.dart';
 import 'package:chat_app/widgets/click_container.dart';
 import 'package:chat_app/widgets/google_container.dart';
@@ -94,6 +95,11 @@ class SignupPage extends ConsumerWidget {
                       try {
                         await AuthServices.createUser(
                             email.text, password.text);
+
+                        ref.read(userNameProvider.notifier).state = name.text;
+                        ref.read(userAdressProvider.notifier).state =
+                            address.text;
+                        ref.read(userEmailAdress.notifier).state = email.text;
                         if (context.mounted) {
                           Navigator.pop(context);
                         }
