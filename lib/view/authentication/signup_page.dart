@@ -1,7 +1,10 @@
 import 'package:chat_app/extensions/responsive.dart';
 import 'package:chat_app/model/authentication.dart';
+import 'package:chat_app/model/fire_store_users.dart';
 import 'package:chat_app/providers/authentication.dart';
+import 'package:chat_app/providers/fire_store_adding.dart';
 import 'package:chat_app/providers/password_provider.dart';
+import 'package:chat_app/view/pages/settings_page.dart';
 import 'package:chat_app/widgets/click_container.dart';
 import 'package:chat_app/widgets/google_container.dart';
 import 'package:chat_app/widgets/loginpage_local.dart';
@@ -61,6 +64,12 @@ class SignupPage extends ConsumerWidget {
                   size: 22,
                   fontWeight: FontWeight.w600,
                 ),
+                SizedBox(
+                  height: context.width(10),
+                ),
+                const ProfileCircleAvatar(
+                  darkmode: false,
+                ),
                 _textfieldColums(context, ref),
                 //we are adding a row for show password and forgot password and changed into a widget for cleaner code
 
@@ -98,14 +107,12 @@ class SignupPage extends ConsumerWidget {
                           password.text,
                         );
 
-                        // AuthServices.firebaseFirestore
-                        //     .collection("users")
-                        //     .doc(AuthServices.auth.currentUser!.uid)
-                        //     .set({
-                        //   "name": name.text,
-                        //   "email": email.text,
-                        //   "userAdress": address.text,
-                        // });
+                        ref.read(
+                          addUserProvider(
+                            FireStoreModel(name: name.text, email: email.text),
+                          ),
+                        );
+                        ref.invalidate(fireStoreProvider);
 
                         ref.read(userNameProvider.notifier).state = name.text;
                         ref.read(userAdressProvider.notifier).state =

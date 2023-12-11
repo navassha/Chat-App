@@ -26,53 +26,7 @@ class SettingsPage extends ConsumerWidget {
         child: Column(
           children: [
             Center(
-              child: CircleAvatar(
-                backgroundColor: Colors.transparent,
-                backgroundImage: ref.watch(userimageShowing) == null
-                    ? const AssetImage("assets/images/user defoult image.png")
-                    : Image.network(ref.watch(userimageShowing)!).image,
-                radius: context.width(90),
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: context.width(120),
-                    top: context.width(120),
-                  ),
-                  child: GestureDetector(
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          elevation: 10,
-                          showCloseIcon: true,
-                          closeIconColor:
-                              darkmode == true ? Colors.white : Colors.black,
-                          backgroundColor:
-                              darkmode == true ? Colors.black : Colors.white,
-                          duration: const Duration(minutes: 3),
-                          content: const Scaffoldmssger(),
-                        ),
-                      );
-                    },
-                    child: CircleAvatar(
-                      backgroundColor:
-                          darkmode == true ? Colors.black : Colors.white,
-                      radius: context.width(20),
-                      child: CircleAvatar(
-                        radius: context.width(16),
-                        backgroundColor:
-                            darkmode == true ? Colors.white : Colors.black,
-                        child: Center(
-                          child: Icon(
-                            Icons.edit,
-                            size: context.width(20),
-                            color:
-                                darkmode == true ? Colors.black : Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              child: ProfileCircleAvatar(darkmode: darkmode),
             ),
             Gap(
               context.width(30),
@@ -128,6 +82,61 @@ class SettingsPage extends ConsumerWidget {
               ),
             )
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class ProfileCircleAvatar extends ConsumerWidget {
+  const ProfileCircleAvatar({
+    super.key,
+    required this.darkmode,
+  });
+
+  final bool darkmode;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return CircleAvatar(
+      backgroundColor: Colors.transparent,
+      backgroundImage: ref.watch(userimageShowing) == null
+          ? const AssetImage("assets/images/user defoult image.png")
+          : Image.network(ref.watch(userimageShowing)!).image,
+      radius: context.width(90),
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: context.width(120),
+          top: context.width(120),
+        ),
+        child: GestureDetector(
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                elevation: 10,
+                showCloseIcon: true,
+                closeIconColor: darkmode == true ? Colors.white : Colors.black,
+                backgroundColor: darkmode == true ? Colors.black : Colors.white,
+                duration: const Duration(minutes: 3),
+                content: const Scaffoldmssger(),
+              ),
+            );
+          },
+          child: CircleAvatar(
+            backgroundColor: darkmode == true ? Colors.black : Colors.white,
+            radius: context.width(20),
+            child: CircleAvatar(
+              radius: context.width(16),
+              backgroundColor: darkmode == true ? Colors.white : Colors.black,
+              child: Center(
+                child: Icon(
+                  Icons.edit,
+                  size: context.width(20),
+                  color: darkmode == true ? Colors.black : Colors.white,
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
