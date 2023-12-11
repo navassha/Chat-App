@@ -94,7 +94,18 @@ class SignupPage extends ConsumerWidget {
                     } else {
                       try {
                         await AuthServices.createUser(
-                            email.text, password.text);
+                          email.text,
+                          password.text,
+                        );
+
+                        // AuthServices.firebaseFirestore
+                        //     .collection("users")
+                        //     .doc(AuthServices.auth.currentUser!.uid)
+                        //     .set({
+                        //   "name": name.text,
+                        //   "email": email.text,
+                        //   "userAdress": address.text,
+                        // });
 
                         ref.read(userNameProvider.notifier).state = name.text;
                         ref.read(userAdressProvider.notifier).state =
@@ -175,6 +186,7 @@ class SignupPage extends ConsumerWidget {
         SizedBox(
           height: context.width(37),
         ),
+
         // we adding one more contmized textfield there adding for getting password from user
 
         MyTextfield(
